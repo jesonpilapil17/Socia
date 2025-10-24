@@ -71,6 +71,7 @@ model Video {
   url         String
   title       String
   description String   @default("")
+  isHidden    Boolean  @default(false)
   views       Int      @default(0)
   createdAt   DateTime @default(now())
 
@@ -78,6 +79,7 @@ model Video {
   likes       Like[]
   comments    Comment[]
   bookmarks   Bookmark[]
+  tags        VideoHashtag[]
 }
 
 model Like {
@@ -104,6 +106,26 @@ model Bookmark {
 
   @@unique([userId, videoId])
   @@index([userId])
+}
+
+// Hashtags and join table for video-tag relations
+model Hashtag {
+  id        String         @id @default(cuid())
+  tag       String         @unique
+  createdAt DateTime       @default(now())
+  videos    VideoHashtag[]
+}
+
+model VideoHashtag {
+  id        String   @id @default(cuid())
+  videoId   String
+  hashtagId String
+
+  video     Video    @relation(fields: [videoId], references: [id])
+  hashtag   Hashtag  @relation(fields: [hashtagId], references: [id])
+
+  @@unique([videoId, hashtagId])
+  @@index([hashtagId])
 }
 
 // Basic content reports (placeholder)
