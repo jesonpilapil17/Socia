@@ -28,21 +28,21 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="max-w-sm mx-auto space-y-4">
-      <h1 className="text-xl font-semibold">Login</h1>
-      {error && <div className="text-red-600 text-sm">{error}</div>}
-      <form className="space-y-3" onSubmit={onSubmit}>
+    <div className="max-w-sm mx-auto space-y-6">
+      <h1 className="text-2xl font-semibold">Login</h1>
+      {error && <div className="text-sm text-red-400">{error}</div>}
+      <form className="space-y-4" onSubmit={onSubmit}>
         <div className="space-y-1">
-          <label className="block text-sm">Email</label>
-          <input className="border px-2 py-1 w-full" type="email" value={email} onChange={e=>setEmail(e.target.value)} required />
+          <label className="block text-sm text-white/70">Email</label>
+          <input className="input" type="email" value={email} onChange={e=>setEmail(e.target.value)} required />
         </div>
         <div className="space-y-1">
-          <label className="block text-sm">Password</label>
-          <input className="border px-2 py-1 w-full" type="password" value={password} onChange={e=>setPassword(e.target.value)} required />
+          <label className="block text-sm text-white/70">Password</label>
+          <input className="input" type="password" value={password} onChange={e=>setPassword(e.target.value)} required />
         </div>
-        <button disabled={loading} className="bg-black text-white px-3 py-2 w-full disabled:opacity-50">{loading ? 'Logging in...' : 'Login'}</button>
+        <button disabled={loading} className="btn-primary w-full disabled:opacity-50">{loading ? 'Logging in...' : 'Login'}</button>
       </form>
-      <div className="text-sm">No account? <a className="text-blue-600 underline" href="/auth/register">Register</a></div>
+      <div className="text-sm text-white/70">No account? <a className="underline" href="/auth/register">Register</a></div>
     </div>
   );
 }

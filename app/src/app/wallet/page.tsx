@@ -39,23 +39,26 @@ export default function WalletPage() {
   };
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-xl font-semibold">Wallet</h1>
-      <div>Balance: {balance} tokens</div>
+    <div className="space-y-6">
+      <h1 className="text-2xl font-semibold">Wallet</h1>
+      <div className="card flex items-center justify-between">
+        <div className="text-white/80">Balance</div>
+        <div className="text-2xl font-semibold">{balance} <span className="text-white/60 text-base">tokens</span></div>
+      </div>
       <div className="flex gap-2 items-center">
-        <button className="bg-purple-600 text-white px-3 py-1" onClick={connectStripe}>
+        <button className="btn" onClick={connectStripe}>
           {me?.stripeAccountId ? 'Manage Stripe Payouts' : 'Connect Stripe' }
         </button>
       </div>
       <div className="flex gap-2 items-center">
-        <input className="border px-2 py-1" type="number" value={tokens} onChange={e=>setTokens(parseInt(e.target.value||'0'))} />
-        <button className="bg-black text-white px-3 py-1" onClick={redeem}>Redeem</button>
+        <input className="input max-w-[160px]" type="number" value={tokens} onChange={e=>setTokens(parseInt(e.target.value||'0'))} />
+        <button className="btn-primary" onClick={redeem}>Redeem</button>
       </div>
       <div>
-        <h2 className="font-semibold">Recent Transactions</h2>
+        <h2 className="font-semibold mb-2">Recent Transactions</h2>
         <ul className="text-sm space-y-1">
           {transactions.map((t) => (
-            <li key={t.id} className="flex justify-between border-b py-1">
+            <li key={t.id} className="flex justify-between border-b border-white/10 py-2">
               <span>{t.type}</span>
               <span className={t.amount >= 0 ? 'text-green-600' : 'text-red-600'}>{t.amount}</span>
             </li>

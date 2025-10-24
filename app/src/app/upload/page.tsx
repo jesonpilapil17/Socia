@@ -15,23 +15,23 @@ export default function UploadPage() {
   };
 
   return (
-    <div className="max-w-md mx-auto space-y-4">
-      <h1 className="text-xl font-semibold">Upload via URL</h1>
-      {message && <div className="text-sm">{message}</div>}
-      <form onSubmit={submit} className="space-y-3">
+    <div className="max-w-md mx-auto space-y-6">
+      <h1 className="text-2xl font-semibold">Upload via URL</h1>
+      {message && <div className="text-sm text-white/70">{message}</div>}
+      <form onSubmit={submit} className="space-y-4">
         <div>
-          <label className="block text-sm">Video URL</label>
-          <input className="border px-2 py-1 w-full" value={url} onChange={e=>setUrl(e.target.value)} required />
+          <label className="block text-sm text-white/70">Video URL</label>
+          <input className="input" value={url} onChange={e=>setUrl(e.target.value)} required />
         </div>
         <div>
-          <label className="block text-sm">Title</label>
-          <input className="border px-2 py-1 w-full" value={title} onChange={e=>setTitle(e.target.value)} required />
+          <label className="block text-sm text-white/70">Title</label>
+          <input className="input" value={title} onChange={e=>setTitle(e.target.value)} required />
         </div>
         <div>
-          <label className="block text-sm">Description</label>
-          <input className="border px-2 py-1 w-full" value={description} onChange={e=>setDescription(e.target.value)} />
+          <label className="block text-sm text-white/70">Description</label>
+          <input className="input" value={description} onChange={e=>setDescription(e.target.value)} />
         </div>
-        <button className="bg-black text-white px-3 py-2 w-full">Upload</button>
+        <button className="btn-primary w-full">Upload</button>
       </form>
     </div>
   );

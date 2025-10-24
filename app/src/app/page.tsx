@@ -80,16 +80,16 @@ export default function Home() {
               <div className="text-sm opacity-80 drop-shadow">@{v.username} — {v.description}</div>
             </div>
             <div className="absolute right-4 bottom-32 flex flex-col items-center gap-3">
-              <button onClick={() => toggleLike(v)} className={`rounded-full px-3 py-2 ${v.liked ? 'bg-red-600' : 'bg-white/20'} text-white`}>❤ {v.likesCount}</button>
-              <a href={`#/comments/${v.id}`} className="rounded-full px-3 py-2 bg-white/20 text-white">💬 {v.commentsCount ?? 0}</a>
+              <button onClick={() => toggleLike(v)} className={`btn ${v.liked ? 'bg-white text-black hover:bg-white' : ''}`}>❤ {v.likesCount}</button>
+              <a href={`#/comments/${v.id}`} className="btn">💬 {v.commentsCount ?? 0}</a>
             </div>
           </div>
         ))}
         {loading && <div className="h-20 text-center text-white">Loading...</div>}
       </div>
-      <div className="absolute top-4 left-1/2 -translate-x-1/2 text-white flex gap-4 bg-black/40 rounded-full px-3 py-1">
-        <button className={tab==='foryou'?'font-bold underline':''} onClick={()=>setTab('foryou')}>For You</button>
-        <button className={tab==='following'?'font-bold underline':''} onClick={()=>setTab('following')}>Following</button>
+      <div className="absolute top-4 left-1/2 -translate-x-1/2 text-white flex gap-2 bg-white/10 rounded-full px-2 py-1 backdrop-blur">
+        <button className={`chip ${tab==='foryou'?'bg-white text-black':''}`} onClick={()=>setTab('foryou')}>For You</button>
+        <button className={`chip ${tab==='following'?'bg-white text-black':''}`} onClick={()=>setTab('following')}>Following</button>
       </div>
     </div>
   );

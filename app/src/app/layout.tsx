@@ -24,7 +24,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black text-white`}>
         <div className="max-w-2xl mx-auto p-4 space-y-6">
           <Nav />
           {children}
@@ -35,15 +35,14 @@ export default function RootLayout({
 }
 
 function Nav() {
-  // client navigation bar via a simple client component wrapper
   return (
-    <div className="flex justify-between items-center border-b pb-2">
-      <div className="flex gap-4">
-        <a href="/">Home</a>
-        <a href="/tasks">Tasks</a>
-        <a href="/wallet">Wallet</a>
-        <a href="/upload">Upload</a>
-        <a href="/u/me">Profile</a>
+    <div className="flex justify-between items-center border-b border-white/10 pb-3">
+      <div className="flex gap-2">
+        <a className="btn-ghost" href="/">Home</a>
+        <a className="btn-ghost" href="/tasks">Tasks</a>
+        <a className="btn-ghost" href="/wallet">Wallet</a>
+        <a className="btn-ghost" href="/upload">Upload</a>
+        <a className="btn-ghost" href="/u/me">Profile</a>
       </div>
       <AuthButtons />
     </div>
@@ -52,10 +51,10 @@ function Nav() {
 
 function AuthButtons() {
   return (
-    <form action="/api/auth/logout" method="post">
-      <a className="mr-3 underline" href="/auth/login">Login</a>
-      <a className="mr-3 underline" href="/auth/register">Register</a>
-      <button className="px-3 py-1 border" type="submit">Logout</button>
+    <form action="/api/auth/logout" method="post" className="flex gap-2 items-center">
+      <a className="btn-ghost" href="/auth/login">Login</a>
+      <a className="btn-ghost" href="/auth/register">Register</a>
+      <button className="btn" type="submit">Logout</button>
     </form>
   );
 }
