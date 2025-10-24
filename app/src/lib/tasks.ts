@@ -50,3 +50,23 @@ export async function incrementTaskProgress(userId: string, taskId: string) {
   }
   return updated;
 }
+
+// Advance the first incomplete task of a given type (e.g., WATCH, LIKE) for today
+export async function incrementFirstIncompleteOfType(
+  userId: string,
+  type: 'WATCH' | 'LIKE' | 'COMMENT' | 'UPLOAD' | 'FOLLOW' | 'CUSTOM'
+) {
+  const today = startOfUtcDay();
+  const task = await prisma.userDailyTask.findFirst({
+    where: {
+      userId,
+      assignedDate: today,
+      completedAt: null,
+      template: { type: type as any },
+    },
+    orderBy: { createdAt: 'asc' },
+    include: { template: true },
+  });
+  if (!task) return null;
+  return incrementTaskProgress(userId, task.id);
+}

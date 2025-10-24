@@ -24,16 +24,40 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black text-white`}>
         <div className="max-w-2xl mx-auto p-4 space-y-6">
-          <nav className="flex gap-4 border-b pb-2">
-            <a href="/">Home</a>
-            <a href="/tasks">Tasks</a>
-            <a href="/wallet">Wallet</a>
-          </nav>
+          <Nav />
           {children}
         </div>
       </body>
     </html>
+  );
+}
+
+function Nav() {
+  return (
+    <div className="flex justify-between items-center border-b border-white/10 pb-3">
+      <div className="flex gap-2">
+        <a className="btn-ghost" href="/">Home</a>
+        <a className="btn-ghost" href="/tasks">Tasks</a>
+        <a className="btn-ghost" href="/wallet">Wallet</a>
+        <a className="btn-ghost" href="/upload">Upload</a>
+        <a className="btn-ghost" href="/u/me">Profile</a>
+        <a className="btn-ghost" href="/saved">Saved</a>
+        <a className="btn-ghost" href="/search">Search</a>
+        <a className="btn-ghost" href="/notifications">Notifications</a>
+      </div>
+      <AuthButtons />
+    </div>
+  );
+}
+
+function AuthButtons() {
+  return (
+    <form action="/api/auth/logout" method="post" className="flex gap-2 items-center">
+      <a className="btn-ghost" href="/auth/login">Login</a>
+      <a className="btn-ghost" href="/auth/register">Register</a>
+      <button className="btn" type="submit">Logout</button>
+    </form>
   );
 }

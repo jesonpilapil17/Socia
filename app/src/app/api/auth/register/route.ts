@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { hashPassword, signInWithPassword } from '@/lib/auth';
+import { createSessionForUser, hashPassword, signInWithPassword } from '@/lib/auth';
 
 export async function POST(req: Request) {
   const body = await req.json().catch(() => ({}));
@@ -11,8 +11,13 @@ export async function POST(req: Request) {
   if (existing) return NextResponse.json({ error: 'User exists' }, { status: 409 });
 
   const passwordHash = await hashPassword(password);
-  await prisma.user.create({ data: { email, username, passwordHash } });
+  const created = await prisma.user.create({ data: { email, username, passwordHash } });
 
+  // set session cookie like login
   const user = await signInWithPassword(email, password);
-  return NextResponse.json({ ok: true, user: { email: user?.email, username: user?.username } });
+  if (!user) return NextResponse.json({ ok: true });
+  const { token, expiresAt } = await createSessionForUser(created.id);
+  const res = NextResponse.json({ ok: true, user: { email: user.email, username: user.username } });
+  res.cookies.set('session', token, { httpOnly: true, sameSite: 'lax', path: '/', expires: expiresAt });
+  return res;
 }
