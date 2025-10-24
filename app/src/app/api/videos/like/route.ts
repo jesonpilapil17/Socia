@@ -15,6 +15,10 @@ export async function POST(req: Request) {
   try {
     if (action === 'like') {
       await prisma.like.create({ data: { userId: user.id, videoId } });
+      const video = await prisma.video.findUnique({ where: { id: videoId } });
+      if (video && video.userId !== user.id) {
+        await prisma.notification.create({ data: { userId: video.userId, actorId: user.id, type: 'LIKE' as any, videoId } });
+      }
     } else {
       await prisma.like.deleteMany({ where: { userId: user.id, videoId } });
     }

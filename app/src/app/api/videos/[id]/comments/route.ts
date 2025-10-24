@@ -33,5 +33,10 @@ export async function POST(req: Request, { params }: { params: { id: string } })
   // credit COMMENT task directly
   await ensureTasksForToday(user.id);
   await incrementFirstIncompleteOfType(user.id, 'COMMENT');
+  // notify author
+  const video = await prisma.video.findUnique({ where: { id: videoId } });
+  if (video && video.userId !== user.id) {
+    await prisma.notification.create({ data: { userId: video.userId, actorId: user.id, type: 'COMMENT' as any, videoId, commentId: created.id } });
+  }
   return NextResponse.json({ comment: created });
 }

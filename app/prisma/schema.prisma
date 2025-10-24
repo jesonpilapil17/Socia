@@ -35,6 +35,12 @@ enum TransactionType {
   ADJUSTMENT
 }
 
+enum NotificationType {
+  LIKE
+  COMMENT
+  FOLLOW
+}
+
 // Core models
 model User {
   id               String   @id @default(cuid())
@@ -56,6 +62,7 @@ model User {
   transactions     TokenTransaction[]
   redemptions      Redemption[]
   sessions         Session[]
+  notifications    Notification[]
 }
 
 model Video {
@@ -208,6 +215,20 @@ model Redemption {
 
   user              User              @relation(fields: [userId], references: [id])
   transaction       TokenTransaction? @relation("RedemptionTransaction")
+}
+
+model Notification {
+  id         String            @id @default(cuid())
+  userId     String            // recipient
+  actorId    String            // who performed the action
+  type       NotificationType
+  videoId    String?
+  commentId  String?
+  readAt     DateTime?
+  createdAt  DateTime          @default(now())
+
+  user       User              @relation(fields: [userId], references: [id])
+  actor      User              @relation("NotificationActor", fields: [actorId], references: [id])
 }
 
 // Stateful session tokens for simple auth

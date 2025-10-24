@@ -37,6 +37,8 @@ export async function POST(req: Request, { params }: { params: { username: strin
     try { await prisma.follow.create({ data: { followerId: me.id, followingId: target.id } }); } catch {}
     await ensureTasksForToday(me.id);
     await incrementFirstIncompleteOfType(me.id, 'FOLLOW');
+    // notify target
+    await prisma.notification.create({ data: { userId: target.id, actorId: me.id, type: 'FOLLOW' as any } });
   } else {
     await prisma.follow.deleteMany({ where: { followerId: me.id, followingId: target.id } });
   }
