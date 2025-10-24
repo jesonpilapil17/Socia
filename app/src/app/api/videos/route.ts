@@ -16,20 +16,48 @@ export async function GET(req: Request) {
     where = { userId: { in: followingIds.length ? followingIds : ['__none__'] } };
   }
 
-  const videos = await prisma.video.findMany({
-    where,
-    orderBy: { createdAt: 'desc' },
-    take,
-    ...(cursor ? { skip: 1, cursor: { id: cursor } } : {}),
-  });
+  let videos = [] as Array<{
+    id: string; userId: string; url: string; title: string; description: string; createdAt: Date; views: number;
+  }>;
+
+  if (tab === 'trending') {
+    // Pick top by likes count; fallback to views
+    const likeGroups = await prisma.like.groupBy({
+      by: ['videoId'],
+      _count: { _all: true },
+      orderBy: { _count: { _all: 'desc' } as any },
+      take,
+    } as any);
+    const ids = likeGroups.map((g: any) => g.videoId);
+    if (ids.length > 0) {
+      const list = await prisma.video.findMany({ where: { id: { in: ids } } });
+      const map = new Map(list.map((v) => [v.id, v]));
+      videos = ids.map((id) => map.get(id)!).filter(Boolean) as any;
+    }
+    if (videos.length < take) {
+      const more = await prisma.video.findMany({ orderBy: { views: 'desc' }, take: take - videos.length });
+      const seen = new Set(videos.map((v) => v.id));
+      videos = [...videos, ...more.filter((m) => !seen.has(m.id))] as any;
+    }
+  } else {
+    videos = await prisma.video.findMany({
+      where,
+      orderBy: { createdAt: 'desc' },
+      take,
+      ...(cursor ? { skip: 1, cursor: { id: cursor } } : {}),
+    }) as any;
+  }
 
   let likedIds = new Set<string>();
+  let savedIds = new Set<string>();
   if (user && videos.length > 0) {
     const likes = await prisma.like.findMany({
       where: { userId: user.id, videoId: { in: videos.map((v) => v.id) } },
       select: { videoId: true },
     });
     likedIds = new Set(likes.map((l) => l.videoId));
+    const saves = await prisma.bookmark.findMany({ where: { userId: user.id, videoId: { in: videos.map((v) => v.id) } }, select: { videoId: true } });
+    savedIds = new Set(saves.map((s) => s.videoId));
   }
 
   const counts = await prisma.like.groupBy({
@@ -54,7 +82,9 @@ export async function GET(req: Request) {
     createdAt: v.createdAt,
     likesCount: countMap.get(v.id) || 0,
     commentsCount: commentCountMap.get(v.id) || 0,
+    views: (v as any).views ?? 0,
     liked: likedIds.has(v.id),
+    saved: savedIds.has(v.id),
   }));
 
   const nextCursor = videos.length === take ? videos[videos.length - 1].id : null;

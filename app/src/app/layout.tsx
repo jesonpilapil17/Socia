@@ -43,6 +43,8 @@ function Nav() {
         <a className="btn-ghost" href="/wallet">Wallet</a>
         <a className="btn-ghost" href="/upload">Upload</a>
         <a className="btn-ghost" href="/u/me">Profile</a>
+        <a className="btn-ghost" href="/saved">Saved</a>
+        <a className="btn-ghost" href="/search">Search</a>
       </div>
       <AuthButtons />
     </div>
