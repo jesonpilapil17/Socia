@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getUserFromCookieHeader } from '@/lib/auth';
+import { ensureTasksForToday, incrementFirstIncompleteOfType } from '@/lib/tasks';
 
 // POST { url, title, description }
 export async function POST(req: Request) {
@@ -10,7 +11,8 @@ export async function POST(req: Request) {
   const { url, title, description } = body as { url?: string; title?: string; description?: string };
   if (!url || !title) return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
   const created = await prisma.video.create({ data: { userId: user.id, url, title, description: description || '' } });
-  // credit UPLOAD task
-  try { await fetch(`${process.env.NEXT_PUBLIC_APP_URL || ''}/api/actions`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type: 'UPLOAD' }) }); } catch {}
+  // credit UPLOAD task directly
+  await ensureTasksForToday(user.id);
+  await incrementFirstIncompleteOfType(user.id, 'UPLOAD');
   return NextResponse.json({ video: created });
 }
