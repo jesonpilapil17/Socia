@@ -42,6 +42,8 @@ function Nav() {
         <a href="/">Home</a>
         <a href="/tasks">Tasks</a>
         <a href="/wallet">Wallet</a>
+        <a href="/upload">Upload</a>
+        <a href="/u/me">Profile</a>
       </div>
       <AuthButtons />
     </div>
