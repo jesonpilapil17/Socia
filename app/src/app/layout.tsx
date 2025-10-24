@@ -26,14 +26,34 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <div className="max-w-2xl mx-auto p-4 space-y-6">
-          <nav className="flex gap-4 border-b pb-2">
-            <a href="/">Home</a>
-            <a href="/tasks">Tasks</a>
-            <a href="/wallet">Wallet</a>
-          </nav>
+          <Nav />
           {children}
         </div>
       </body>
     </html>
+  );
+}
+
+function Nav() {
+  // client navigation bar via a simple client component wrapper
+  return (
+    <div className="flex justify-between items-center border-b pb-2">
+      <div className="flex gap-4">
+        <a href="/">Home</a>
+        <a href="/tasks">Tasks</a>
+        <a href="/wallet">Wallet</a>
+      </div>
+      <AuthButtons />
+    </div>
+  );
+}
+
+function AuthButtons() {
+  return (
+    <form action="/api/auth/logout" method="post">
+      <a className="mr-3 underline" href="/auth/login">Login</a>
+      <a className="mr-3 underline" href="/auth/register">Register</a>
+      <button className="px-3 py-1 border" type="submit">Logout</button>
+    </form>
   );
 }

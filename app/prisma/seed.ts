@@ -35,17 +35,23 @@ async function main() {
     },
   });
 
-  // Create some demo videos
-  for (let i = 1; i <= 8; i++) {
+  // Create some demo videos using free sample assets
+  const sampleVideos = [
+    { id: 'demo-video-1', url: 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4', title: 'Flowers', description: 'Beautiful flowers in the wind' },
+    { id: 'demo-video-2', url: 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/forest.mp4', title: 'Forest', description: 'Walk through the forest' },
+    { id: 'demo-video-3', url: 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/bee.mp4', title: 'Bee', description: 'A bee on a flower' },
+    { id: 'demo-video-4', url: 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/river.mp4', title: 'River', description: 'Calm river flow' },
+  ];
+  for (const v of sampleVideos) {
     await prisma.video.upsert({
-      where: { id: `demo-video-${i}` },
+      where: { id: v.id },
       update: {},
       create: {
-        id: `demo-video-${i}`,
+        id: v.id,
         userId: demo.id,
-        url: `https://cdn.example.com/videos/demo-${i}.mp4`,
-        title: `Demo Video ${i}`,
-        description: `A sample short ${i}`,
+        url: v.url,
+        title: v.title,
+        description: v.description,
       },
     });
   }
