@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getUserFromCookieHeader } from '@/lib/auth';
 import { ensureTasksForToday, incrementFirstIncompleteOfType } from '@/lib/tasks';
+import { passesCsrf } from '@/lib/security';
 
 export async function GET(req: Request, { params }: { params: { username: string } }) {
   const current = await getUserFromCookieHeader(req.headers.get('cookie'));
@@ -21,6 +22,7 @@ export async function GET(req: Request, { params }: { params: { username: string
 
 // POST { action: 'follow' | 'unfollow' }
 export async function POST(req: Request, { params }: { params: { username: string } }) {
+  if (!passesCsrf(req)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   const me = await getUserFromCookieHeader(req.headers.get('cookie'));
   if (!me) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const target = await prisma.user.findUnique({ where: { username: params.username } });

@@ -2,9 +2,11 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getUserFromCookieHeader } from '@/lib/auth';
 import { ensureTasksForToday, incrementFirstIncompleteOfType } from '@/lib/tasks';
+import { passesCsrf } from '@/lib/security';
 
 // POST { videoId }
 export async function POST(req: Request) {
+  if (!passesCsrf(req)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   const user = await getUserFromCookieHeader(req.headers.get('cookie'));
   const body = await req.json().catch(() => ({}));
   const { videoId } = body as { videoId?: string };

@@ -6,11 +6,21 @@ export default function UploadPage() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [message, setMessage] = useState<string | null>(null);
+  const [file, setFile] = useState<File | null>(null);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setMessage(null);
-    const res = await fetch('/api/videos/upload', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ url, title, description }) });
+    if (file) {
+      const fd = new FormData();
+      fd.append('file', file);
+      fd.append('title', title);
+      fd.append('description', description);
+      const res = await fetch('/api/videos/upload/file', { method: 'POST', headers: { 'x-csrf': '1' }, body: fd });
+      setMessage(res.ok ? 'Uploaded!' : 'Upload failed');
+      return;
+    }
+    const res = await fetch('/api/videos/upload', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-csrf': '1' }, body: JSON.stringify({ url, title, description }) });
     if (res.ok) setMessage('Uploaded!'); else setMessage('Upload failed');
   };
 
@@ -22,6 +32,10 @@ export default function UploadPage() {
         <div>
           <label className="block text-sm text-white/70">Video URL</label>
           <input className="input" value={url} onChange={e=>setUrl(e.target.value)} required />
+        </div>
+        <div>
+          <label className="block text-sm text-white/70">Or Upload File</label>
+          <input className="input file:mr-4 file:rounded-full file:border-0 file:bg-white file:text-black" type="file" accept="video/*" onChange={e=>setFile(e.target.files?.[0] || null)} />
         </div>
         <div>
           <label className="block text-sm text-white/70">Title</label>

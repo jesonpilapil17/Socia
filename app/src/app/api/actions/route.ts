@@ -1,10 +1,12 @@
 import { NextResponse } from 'next/server';
 import { getUserFromCookieHeader } from '@/lib/auth';
 import { ensureTasksForToday, incrementFirstIncompleteOfType } from '@/lib/tasks';
+import { passesCsrf } from '@/lib/security';
 
 // Record a user action to advance matching daily task type
 // POST { type: 'WATCH' | 'LIKE' | 'COMMENT' | 'UPLOAD' | 'FOLLOW' | 'CUSTOM' }
 export async function POST(req: Request) {
+  if (!passesCsrf(req)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   const user = await getUserFromCookieHeader(req.headers.get('cookie'));
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
